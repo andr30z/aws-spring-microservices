@@ -1,4 +1,4 @@
-package br.com.siecola.aws_project01;
+package br.com.siecola.products;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

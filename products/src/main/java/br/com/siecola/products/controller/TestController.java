@@ -1,4 +1,4 @@
-package br.com.siecola.aws_project01.controller;
+package br.com.siecola.products.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
