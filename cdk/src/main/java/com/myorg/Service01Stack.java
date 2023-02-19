@@ -59,7 +59,7 @@ public class Service01Stack extends Stack {
           .builder()
           .containerName("aws-project01")
           .image(
-            ContainerImage.fromRegistry("andr30z/curso_aws_project01:1.1.0")
+            ContainerImage.fromRegistry("andr30z/curso_aws_project01:1.2.0")
           )
           .containerPort(8080)
           .logDriver(
