@@ -1,6 +1,22 @@
+.classpath.txt
+target
+.classpath
+.project
+.idea
+.settings
+.vscode
+*.iml
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out
+
 HELP.md
 .gradle
-build/
+buid/
+bin/
+**/build/
+**/bin/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
