@@ -8,8 +8,8 @@ target
 *.iml
 
 # CDK asset staging directory
-.cdk.staging
-cdk.out
+.cdk.staging/
+cdk.out/
 
 HELP.md
 .gradle
