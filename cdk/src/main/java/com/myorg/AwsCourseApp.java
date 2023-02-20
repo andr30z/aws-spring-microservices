@@ -17,6 +17,9 @@ public class AwsCourseApp {
 
     RdsStack rdsStack = new RdsStack(app, "RDS", vpcStack.getVpc());
     rdsStack.addDependency(vpcStack);
+
+
+    SnsStack snsStack = new SnsStack(app, "Sns");
     Service01Stack service01Stack = new Service01Stack(
       app,
       "Service01",
