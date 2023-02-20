@@ -18,7 +18,7 @@ public class SnsConfig {
   private String productEventsTopic;
 
   @Bean
-  public AmazonSNS snsClient() {
+  AmazonSNS snsClient() {
     return AmazonSNSClientBuilder
       .standard()
       .withRegion(awsRegion)
@@ -27,7 +27,7 @@ public class SnsConfig {
   }
 
   @Bean(name = "productEventsTopic")
-  public Topic snsProductEventsTopic() {
+  Topic snsProductEventsTopic() {
     return new Topic().withTopicArn(productEventsTopic);
   }
 }

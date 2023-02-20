@@ -1,7 +1,9 @@
 package br.com.siecola.products.controller;
 
+import br.com.siecola.products.enums.*;
 import br.com.siecola.products.model.Product;
 import br.com.siecola.products.repository.ProductRepository;
+import br.com.siecola.products.service.ProductPublisher;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
@@ -20,10 +22,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/products")
 public class ProductController {
 
-  private ProductRepository productRepository;
+  private final ProductRepository productRepository;
+  private final ProductPublisher productPublisher;
 
-  public ProductController(ProductRepository productRepository) {
+  public ProductController(
+    ProductRepository productRepository,
+    ProductPublisher productPublisher
+  ) {
     this.productRepository = productRepository;
+    this.productPublisher = productPublisher;
   }
 
   @GetMapping
@@ -42,7 +49,11 @@ public class ProductController {
   @PostMapping
   public ResponseEntity<Product> saveProduct(@RequestBody Product product) {
     Product productCreated = productRepository.save(product);
-
+    productPublisher.publishProductEvent(
+      productCreated,
+      EventType.PRODUCT_CREATED,
+      "service01-create-product"
+    );
     return new ResponseEntity<Product>(productCreated, HttpStatus.CREATED);
   }
 
@@ -55,7 +66,11 @@ public class ProductController {
       product.setId(id);
 
       Product productUpdated = productRepository.save(product);
-
+      productPublisher.publishProductEvent(
+        productUpdated,
+        EventType.PRODUCT_UPDATE,
+        "service01-update-product"
+      );
       return new ResponseEntity<Product>(productUpdated, HttpStatus.OK);
     } else {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -69,7 +84,11 @@ public class ProductController {
       Product product = optProduct.get();
 
       productRepository.delete(product);
-
+      productPublisher.publishProductEvent(
+        product,
+        EventType.PRODUCT_UPDATE,
+        "service01-delete-product"
+      );
       return new ResponseEntity<Product>(product, HttpStatus.OK);
     } else {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
