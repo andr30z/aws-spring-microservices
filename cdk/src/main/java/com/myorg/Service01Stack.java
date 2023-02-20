@@ -52,6 +52,11 @@ public class Service01Stack extends Stack {
       "SPRING_DATASOURCE_PASSWORD",
       Fn.importValue("rds-password")
     );
+    envVariables.put("AWS_REGION", "usa-east-1");
+    envVariables.put(
+      "AWS_SNS_TOPIC_PRODUCT_EVENTS_ARN",
+      productEventsTopic.getTopic().getTopicArn()
+    );
 
     ApplicationLoadBalancedFargateService service01 = ApplicationLoadBalancedFargateService.Builder
       .create(this, "ALB01")
