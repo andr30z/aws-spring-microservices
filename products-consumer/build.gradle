@@ -27,9 +27,9 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
 bootJar {
-	baseName = 'curso_aws_project01'
-	version =  '1.2.0'
-	mainClassName = "br.com.siecola.aws_project01.AwsProject01Application"
+	baseName = 'curso_aws_project02'
+	version =  '1.1.0'
+	mainClassName = "br.com.siecola.aws_project02.ProductsConsumerApplication"
 }
 
 task unpack(type: Copy) {
@@ -44,7 +44,6 @@ docker {
 	buildArgs(['DEPENDENCY': "dependency"])
 }
 
-
 repositories {
 	mavenCentral()
 	maven { url 'https://repo.spring.io/milestone' }
@@ -52,16 +51,15 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
- 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-	implementation('org.postgresql:postgresql')
-
-	implementation group: 'com.amazonaws', name: 'aws-java-sdk-sns', version: '1.12.410'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
 
-    compileOnly 'org.projectlombok:lombok'
+	implementation group: 'org.springframework', name: 'spring-jms', version: '5.2.9.RELEASE'
+	implementation group: 'com.amazonaws', name: 'amazon-sqs-java-messaging-lib', version: '1.0.8'
+	implementation group: 'com.amazonaws', name: 'aws-java-sdk-sqs', version: '1.12.414'
+	
+	compileOnly 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
