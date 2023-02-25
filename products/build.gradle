@@ -61,7 +61,9 @@ dependencies {
 	implementation group: 'com.amazonaws', name: 'aws-java-sdk-sns', version: '1.12.410'
 
 
-    compileOnly 'org.projectlombok:lombok'
+    // https://mvnrepository.com/artifact/org.projectlombok/lombok
+	compileOnly 'org.projectlombok:lombok'  
+  	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

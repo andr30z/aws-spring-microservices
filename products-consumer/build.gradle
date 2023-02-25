@@ -59,7 +59,8 @@ dependencies {
 	implementation group: 'com.amazonaws', name: 'amazon-sqs-java-messaging-lib', version: '1.0.8'
 	implementation group: 'com.amazonaws', name: 'aws-java-sdk-sqs', version: '1.12.414'
 	
-	compileOnly 'org.projectlombok:lombok'
+	compileOnly 'org.projectlombok:lombok'  
+  	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

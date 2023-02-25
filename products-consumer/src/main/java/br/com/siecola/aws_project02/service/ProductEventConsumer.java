@@ -21,7 +21,6 @@ public class ProductEventConsumer {
 
     private ObjectMapper objectMapper;
 
-    @Autowired
     public ProductEventConsumer(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
