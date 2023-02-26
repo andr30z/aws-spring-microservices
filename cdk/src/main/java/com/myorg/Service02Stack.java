@@ -132,8 +132,7 @@ public class Service02Stack extends Stack {
         .build()
     );
 
-    productEventsTopic
-      .getTopic()
-      .grantPublish(service02.getTaskDefinition().getTaskRole());
+    productEventsQueue
+      .grantConsumeMessages(service02.getTaskDefinition().getTaskRole());
   }
 }
