@@ -49,7 +49,10 @@ public class ProductPublisher {
     try {
       String productStringfied = objectMapper.writeValueAsString(productEvent);
       envelope.setData(productStringfied);
-      amazonSNS.publish(snsProductEventsTopic.getTopicArn(), productStringfied);
+      amazonSNS.publish(
+        snsProductEventsTopic.getTopicArn(),
+        objectMapper.writeValueAsString(envelope)
+      );
     } catch (JsonProcessingException e) {
       LOG.error("Failed to create event message");
     }
