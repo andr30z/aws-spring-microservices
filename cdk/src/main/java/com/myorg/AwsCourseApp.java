@@ -29,6 +29,9 @@ public class AwsCourseApp {
     service01Stack.addDependency(rdsStack);
     service01Stack.addDependency(snsStack);
 
+
+    DynamoDBStack dbStack = new DynamoDBStack(app, "Ddb");
+
     Service02Stack service02Stack = new Service02Stack(
       app,
       "Service02",
@@ -37,6 +40,10 @@ public class AwsCourseApp {
     );
     service02Stack.addDependency(clusterStack);
     service02Stack.addDependency(snsStack);
+    service02Stack.addDependency(dbStack);
+
+
+
     app.synth();
   }
 }
