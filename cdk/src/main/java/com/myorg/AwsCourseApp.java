@@ -36,7 +36,8 @@ public class AwsCourseApp {
       app,
       "Service02",
       clusterStack.getCluster(),
-      snsStack.getProductEventsTopic()
+      snsStack.getProductEventsTopic(),
+      dbStack.getProductEventsDdb()
     );
     service02Stack.addDependency(clusterStack);
     service02Stack.addDependency(snsStack);

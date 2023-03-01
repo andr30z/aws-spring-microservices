@@ -2,12 +2,12 @@ package com.myorg;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import software.amazon.awscdk.Duration;
 import software.amazon.awscdk.RemovalPolicy;
 import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.StackProps;
 import software.amazon.awscdk.services.applicationautoscaling.EnableScalingProps;
+import software.amazon.awscdk.services.dynamodb.Table;
 import software.amazon.awscdk.services.ecs.AwsLogDriverProps;
 import software.amazon.awscdk.services.ecs.Cluster;
 import software.amazon.awscdk.services.ecs.ContainerImage;
@@ -18,6 +18,7 @@ import software.amazon.awscdk.services.ecs.patterns.ApplicationLoadBalancedFarga
 import software.amazon.awscdk.services.ecs.patterns.ApplicationLoadBalancedTaskImageOptions;
 import software.amazon.awscdk.services.elasticloadbalancingv2.HealthCheck;
 import software.amazon.awscdk.services.events.targets.SnsTopic;
+import software.amazon.awscdk.services.iam.IRole;
 import software.amazon.awscdk.services.logs.LogGroup;
 import software.amazon.awscdk.services.sns.subscriptions.SqsSubscription;
 import software.amazon.awscdk.services.sqs.DeadLetterQueue;
@@ -26,13 +27,16 @@ import software.constructs.Construct;
 
 public class Service02Stack extends Stack {
 
+  private static final String DOCKER_HUB_URL = "andr30z/curso_aws_project02:1.2.0";
+
   public Service02Stack(
     final Construct scope,
     String id,
     Cluster cluster,
-    SnsTopic productEventsTopic
+    SnsTopic productEventsTopic,
+    Table productEventsDdb
   ) {
-    this(scope, id, null, cluster, productEventsTopic);
+    this(scope, id, null, cluster, productEventsTopic, productEventsDdb);
   }
 
   public Service02Stack(
@@ -40,7 +44,8 @@ public class Service02Stack extends Stack {
     final String id,
     final StackProps props,
     Cluster cluster,
-    SnsTopic productEventsTopic
+    SnsTopic productEventsTopic,
+    Table productEventsDdb
   ) {
     super(scope, id, props);
     Queue productEventsDlqQueue = Queue.Builder
@@ -59,15 +64,17 @@ public class Service02Stack extends Stack {
       .deadLetterQueue(deadLetterQueue)
       .build();
 
-
-    SqsSubscription sqsSubscription = SqsSubscription.Builder.create(productEventsQueue).build();
+    SqsSubscription sqsSubscription = SqsSubscription.Builder
+      .create(productEventsQueue)
+      .build();
     productEventsTopic.getTopic().addSubscription(sqsSubscription);
 
     Map<String, String> envVariables = new HashMap<>();
     envVariables.put("AWS_REGION", "usa-east-1");
-    envVariables.put("AWS_SQS_QUEUE_PRODUCT_EVENTS_NAME", productEventsQueue.getQueueName());
-
-
+    envVariables.put(
+      "AWS_SQS_QUEUE_PRODUCT_EVENTS_NAME",
+      productEventsQueue.getQueueName()
+    );
 
     ApplicationLoadBalancedFargateService service02 = ApplicationLoadBalancedFargateService.Builder
       .create(this, "ALB02")
@@ -82,7 +89,7 @@ public class Service02Stack extends Stack {
           .builder()
           .containerName("aws-project02")
           .image(
-            ContainerImage.fromRegistry("andr30z/curso_aws_project02:1.1.0")
+            ContainerImage.fromRegistry(DOCKER_HUB_URL)
           )
           .containerPort(9090)
           .logDriver(
@@ -132,7 +139,8 @@ public class Service02Stack extends Stack {
         .build()
     );
 
-    productEventsQueue
-      .grantConsumeMessages(service02.getTaskDefinition().getTaskRole());
+    IRole serviceRole = service02.getTaskDefinition().getTaskRole();
+    productEventsDdb.grantReadWriteData(serviceRole);
+    productEventsQueue.grantConsumeMessages(serviceRole);
   }
 }
