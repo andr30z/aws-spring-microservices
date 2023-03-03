@@ -21,5 +21,6 @@ public class ProductEventLogDTO {
 
   public ProductEventLogDTO(ProductEventLog productEventLog) {
     BeanUtils.copyProperties(productEventLog, this);
+    setCode(productEventLog.getPk());
   }
 }

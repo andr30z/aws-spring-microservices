@@ -1,6 +1,8 @@
 package br.com.siecola.aws_project02.model;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -20,7 +22,7 @@ public class ProductEventKey {
     this.pk = pk;
   }
 
-  @DynamoDBHashKey(attributeName = "sk")
+  @DynamoDBRangeKey(attributeName = "sk")
   public String getSk() {
     return sk;
   }
