@@ -1,5 +1,6 @@
 package br.com.siecola.products.config.local;
 
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sns.AmazonSNS;
@@ -35,6 +36,7 @@ public class SqsCreateSubscriber {
           Regions.US_EAST_1.getName()
         )
       )
+      .withCredentials(new DefaultAWSCredentialsProviderChain())
       .build();
     String productEventsQueueUrl = sqsClient
       .createQueue(new CreateQueueRequest("product-events"))

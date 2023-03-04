@@ -1,5 +1,6 @@
 package br.com.siecola.products.config.local;
 
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sns.*;
@@ -30,6 +31,7 @@ public class SnsCreate {
             Regions.US_EAST_1.getName()
           )
         )
+        .withCredentials(new DefaultAWSCredentialsProviderChain())
         .build();
     CreateTopicRequest createTopicRequest = new CreateTopicRequest(
       "product-events"
