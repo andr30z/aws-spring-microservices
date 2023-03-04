@@ -19,6 +19,8 @@ import software.amazon.awscdk.services.ecs.patterns.ApplicationLoadBalancedTaskI
 import software.amazon.awscdk.services.elasticloadbalancingv2.HealthCheck;
 import software.amazon.awscdk.services.events.targets.SnsTopic;
 import software.amazon.awscdk.services.logs.LogGroup;
+import software.amazon.awscdk.services.s3.Bucket;
+import software.amazon.awscdk.services.sqs.Queue;
 import software.constructs.Construct;
 
 public class Service01Stack extends Stack {
@@ -27,9 +29,19 @@ public class Service01Stack extends Stack {
     final Construct scope,
     String id,
     Cluster cluster,
-    SnsTopic productEventsTopic
+    SnsTopic productEventsTopic,
+    Bucket invoiceBucket,
+    Queue invoiceQueue
   ) {
-    this(scope, id, null, cluster, productEventsTopic);
+    this(
+      scope,
+      id,
+      null,
+      cluster,
+      productEventsTopic,
+      invoiceBucket,
+      invoiceQueue
+    );
   }
 
   public Service01Stack(
@@ -37,7 +49,9 @@ public class Service01Stack extends Stack {
     final String id,
     final StackProps props,
     Cluster cluster,
-    SnsTopic productEventsTopic
+    SnsTopic productEventsTopic,
+    Bucket invoiceBucket,
+    Queue invoiceQueue
   ) {
     super(scope, id, props);
     Map<String, String> envVariables = new HashMap<>();
@@ -57,6 +71,14 @@ public class Service01Stack extends Stack {
       "AWS_SNS_TOPIC_PRODUCT_EVENTS_ARN",
       productEventsTopic.getTopic().getTopicArn()
     );
+    envVariables.put(
+      "AWS_S3_BUCKET_INVOICE_NAME",
+      invoiceBucket.getBucketName()
+    );
+    envVariables.put(
+      "AWS_SQS_QUEUE_INVOICE_EVENTS_NAME",
+      invoiceQueue.getQueueName()
+    );
 
     ApplicationLoadBalancedFargateService service01 = ApplicationLoadBalancedFargateService.Builder
       .create(this, "ALB01")
@@ -71,7 +93,7 @@ public class Service01Stack extends Stack {
           .builder()
           .containerName("aws-project01")
           .image(
-            ContainerImage.fromRegistry("andr30z/curso_aws_project01:1.2.0")
+            ContainerImage.fromRegistry("andr30z/curso_aws_project01:1.3.0")
           )
           .containerPort(8080)
           .logDriver(
@@ -124,5 +146,10 @@ public class Service01Stack extends Stack {
     productEventsTopic
       .getTopic()
       .grantPublish(service01.getTaskDefinition().getTaskRole());
+
+    invoiceQueue.grantConsumeMessages(
+      service01.getTaskDefinition().getTaskRole()
+    );
+    invoiceBucket.grantReadWrite(service01.getTaskDefinition().getTaskRole());
   }
 }

@@ -18,17 +18,21 @@ public class AwsCourseApp {
     RdsStack rdsStack = new RdsStack(app, "RDS", vpcStack.getVpc());
     rdsStack.addDependency(vpcStack);
 
+    InvoiceAppStack invoiceAppStack = new InvoiceAppStack(app, "InvoiceApp");
+
     SnsStack snsStack = new SnsStack(app, "Sns");
     Service01Stack service01Stack = new Service01Stack(
       app,
       "Service01",
       clusterStack.getCluster(),
-      snsStack.getProductEventsTopic()
+      snsStack.getProductEventsTopic(),
+      invoiceAppStack.getBucket(),
+      invoiceAppStack.getS3InvoiceQueue()
     );
+    service01Stack.addDependency(invoiceAppStack);
     service01Stack.addDependency(clusterStack);
     service01Stack.addDependency(rdsStack);
     service01Stack.addDependency(snsStack);
-
 
     DynamoDBStack dbStack = new DynamoDBStack(app, "Ddb");
 
@@ -42,8 +46,6 @@ public class AwsCourseApp {
     service02Stack.addDependency(clusterStack);
     service02Stack.addDependency(snsStack);
     service02Stack.addDependency(dbStack);
-
-
 
     app.synth();
   }
