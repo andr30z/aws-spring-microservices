@@ -8,5 +8,10 @@
     "name": "aws.sns.topic.product.events.arn",
     "type": "java.lang.String",
     "description": "A description for 'aws.sns.topic.product.event.arn'"
+  },
+  {
+    "name": "aws.s3.bucket.invoice",
+    "type": "java.lang.String",
+    "description": "A description for 'aws.s3.bucket.invoice'"
   }
 ]}
